@@ -1,0 +1,13 @@
+{
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/uzulla/CFEDb2"
+        }
+    ],
+    "require": {
+        "slim/slim": "2.*",
+        "uzulla/cfedb2": "dev-master"
+    }
+}
+

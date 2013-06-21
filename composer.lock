@@ -1,0 +1,113 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "52b4ee199ac64751c25dfa27948ccaba",
+    "packages": [
+        {
+            "name": "slim/slim",
+            "version": "2.2.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/codeguy/Slim",
+                "reference": "2.2.0"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://github.com/codeguy/Slim/archive/2.2.0.zip",
+                "reference": "2.2.0",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Slim": "."
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Josh Lockhart",
+                    "email": "info@joshlockhart.com",
+                    "homepage": "http://www.joshlockhart.com/"
+                }
+            ],
+            "description": "Slim Framework, a PHP micro framework",
+            "homepage": "http://github.com/codeguy/Slim",
+            "keywords": [
+                "microframework",
+                "rest",
+                "router"
+            ],
+            "time": "2012-12-13 02:15:50"
+        },
+        {
+            "name": "uzulla/cfedb2",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/uzulla/CFEDb2.git",
+                "reference": "6cddecd219f09077464070b6736b37919ccf11f5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/uzulla/CFEDb2/zipball/6cddecd219f09077464070b6736b37919ccf11f5",
+                "reference": "6cddecd219f09077464070b6736b37919ccf11f5",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "Uzulla\\CFEDb2": "lib/"
+                }
+            },
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Junichi Ishida aka uzulla",
+                    "email": "uzulla@himitsukichi.com",
+                    "homepage": "http://twitter.com/uzulla/"
+                }
+            ],
+            "description": "eccentric and risky, outdated ORM for PHP.",
+            "homepage": "http://github.com/uzulla/CFEDb2",
+            "keywords": [
+                "db",
+                "orm"
+            ],
+            "support": {
+                "source": "https://github.com/uzulla/CFEDb2/tree/master",
+                "issues": "https://github.com/uzulla/CFEDb2/issues"
+            },
+            "time": "2013-06-21 14:07:29"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": {
+        "uzulla/cfedb2": 20
+    },
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}
