@@ -1,0 +1,11 @@
+{% autoescape true %}
+
+{% extends "layout.html" %}
+
+{% block sub_title %}Login{% endblock %}
+
+{% block content %}
+<h1>You must login.</h1>
+<a href="{{urlFor('twitter_auth_start')}}" class="btn">Login by Twitter</a>
+{% endblock %}
+{% endautoescape %}
