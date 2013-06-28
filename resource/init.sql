@@ -15,8 +15,8 @@ CREATE TABLE user_account(
 DROP TABLE message;
 CREATE TABLE message(
     id integer PRIMARY KEY,
-    to_twitter_id text,
-    from_twitter_id text,
+    to_user_account_id text,
+    from_user_account_id text,
     message text,
     is_open integer,
     created_at text,

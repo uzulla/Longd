@@ -25,4 +25,13 @@ class UserAccount extends \Uzulla\CFEDb2{
         return static::getBySome('twitter_id', $twitter_id);
     }
 
+    public function updateByTwitterRes($user)
+    {
+        plog($user);
+        $this->val('twitter_id', $user->id_str);
+        $this->val('profile_image_url', $user->profile_image_url);
+        $this->val('screen_name', $user->screen_name);
+        $this->val('display_name', $user->name);
+    }
+
 }

@@ -15,8 +15,9 @@
             <div class="nav-collapse collapse">
                 <ul class="nav">
                     {% if user %}
-                        <li><a href="{{ urlFor('logout') }}">logout</a></li>
-                        <li><a href="{{ urlFor('message_create') }}">create message</a></li>
+                    <li><img src="{{user.profile_image_url}}" height="40" width="40" ></li>
+                    <li><a href="{{ urlFor('logout') }}">logout</a></li>
+                    <li><a href="{{ urlFor('message_create') }}">create message</a></li>
                     {% endif %}
                 </ul>
             </div>
@@ -33,6 +34,7 @@
 <!--[if lt IE 9]>
 <script src="{{BASE_URL}}js/html5shiv.js"></script>
 <![endif]-->
+{% block extrajs %}{% endblock %}
 </body>
 </html>
 {% endautoescape %}

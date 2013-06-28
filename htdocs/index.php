@@ -15,7 +15,8 @@ spl_autoload_register(function($class) {
 session_cache_limiter(false);
 session_start();
 
-\Codebird\Codebird::setConsumerKey(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
+\Uzulla\Util\Twitter::setConsumerKey(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
+//\Codebird\Codebird::setConsumerKey(TWITTER_CONSUMER_KEY, TWITTER_CONSUMER_SECRET);
 
 $twigView = new \Slim\Extras\Views\Twig();
 \Slim\Extras\Views\Twig::$twigExtensions = array(
@@ -27,6 +28,8 @@ $app = new \Slim\Slim([
     'templates.path' => realpath('../templates'),
     'view' => $twigView,
 ]);
+
+$app->stash = [];
 
 $app->hook( 'slim.before.dispatch', function() use ( $app ) {
     $app->view()->appendData(['BASE_URL' => BASE_URL]);
@@ -40,7 +43,7 @@ $app->hook( 'slim.before.dispatch', function() use ( $app ) {
         if(isset($_SESSION['user_account_id'])){
             $user = \Longd\Model\UserAccount::getById($_SESSION['user_account_id'])->values;
             $app->view()->appendData(['user' => $user ]);
-            $_SESSION['user'] = $user;
+            $app->stash['user'] = $user;
         }
     }
 
@@ -78,6 +81,10 @@ $app->post('/message/commit', function () use ($app) {
     \Longd\Controller\Message::commit($app);
 })->name('message_commit');
 
+$app->get('/message/complete', function () use ($app) {
+    $app->render('Message/complete.html');
+})->name('message_complete');
+
 $app->get('/auth/twitter/start', function () use ($app) {
     \Longd\Controller\Twitter::authStart($app);
 })->name('twitter_auth_start');
@@ -87,9 +94,14 @@ $app->get('/auth/twitter/callback', function () use ($app) {
 })->name('twitter_callback');
 
 
+//-- API
 $app->post('/api/twitter/screen_name_exist', function () use ($app) {
     \Longd\Controller\API::screen_name_exist($app);
 })->name('api_twitter_screen_name_exist');
+
+$app->get('/api/message/get', function () use ($app) {
+    \Longd\Controller\API::get_message($app);
+})->name('api_get_message');
 
 $app->run();
 

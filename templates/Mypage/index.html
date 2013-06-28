@@ -2,6 +2,105 @@
 {% extends "layout.html" %}
 
 {% block content %}
-{{user.screen_name}}
+<link href="{{BASE_URL}}css/stream_table_style.css" rel="stylesheet" media="screen">
+<h3>message list</h3>
+
+<div class='stream_table_wrapper'>
+    <span id="found" class="label label-info"></span>
+    <div class="progress">
+        <div id="record_count" class="bar" style="width: 0%">0</div>
+    </div>
+    <table id="stream_table" class='table table-striped table-bordered'>
+        <thead>
+        <tr>
+            <th>#</th>
+            <th>from</th>
+            <th>message</th>
+            <th>date</th>
+        </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+    <div id="summary"><div>
+</div>
+{% raw %}
+<script id="template" type="text/html">
+    <tr>
+        <td>{{index}}</td>
+        <td>{{record.screen_name}}</td>
+        <td>{{record.message}}</td>
+        <td>{{record.created_at}}</td>
+    </tr>
+</script>
+{% endraw %}
+
 {% endblock %}
 {% endautoescape %}
+{% block extrajs %}
+<script src="{{BASE_URL}}js/mustache.js"></script>
+<script src="{{BASE_URL}}js/stream_table.js"></script>
+
+<script>
+
+    var st; //For debuggin only
+    $(document).ready(function() {
+        var html = $.trim($("#template").html())
+        var template = Mustache.compile(html);
+        var view = function(record, index){
+            return template({record: record, index: index});
+        };
+        var $summary = $('#summary');
+        var $found = $('#found');
+        var $record_count = $('#record_count');
+        var total_item_num = {{ total_message_num }};
+
+        $('#found').hide();
+        var $firstLoad = 1;
+
+        var callbacks = {
+            pagination: function(summary){
+                if ($.trim($('#st_search').val()).length > 0){
+                    $found.text('Found : '+ summary.total).show();
+                }else{
+                    $found.hide();
+                }
+                $summary.text( summary.from + ' to '+ summary.to +' of '+ summary.total +' entries');
+            },
+            after_add: function(){
+                if($firstLoad){
+                    this.render(this.data, 0);
+                    $firstLoad = 0;
+                }
+
+                var percent = this.data.length*100 / total_item_num;
+                $record_count.text(percent + '%').attr('style', 'width:' + percent + '%');
+
+                if (this.data.length == total_item_num){
+                    this.clearTimer();
+                    $('.stream_table_wrapper .progress').removeClass('active').hide();
+                }
+
+            }
+        }
+
+        var $api_url = "{{urlFor('api_get_message')}}";
+
+        st = StreamTable('#stream_table',
+                { view: view,
+                    per_page: 100,
+                    data_url: $api_url,
+                    stream_after: 0.5,
+                    fetch_data_limit: 1000,
+                    callbacks: callbacks,
+                    pagination: {span: 5, next_text: 'Next &rarr;', prev_text: '&larr; Previous'}
+                }
+                );
+
+    });
+
+
+
+</script>
+
+{% endblock %}

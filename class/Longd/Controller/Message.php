@@ -16,22 +16,28 @@ class Message {
     static function commit($app){
         $r = $app->request();
 
-        //todo save db
+        $user = $app->stash['user'];
+        $to_twitter_id = $r->post('twitter_id_str');
+
+        try{
+            $res = \Uzulla\Util\Twitter::getByTwitterId($user, $to_twitter_id);
+        }catch (\Exception $e){
+            throw $e;
+        }
+
+        $to_user = \Longd\Model\UserAccount::getByTwitterId($to_twitter_id);
+        if(empty($to_user)){ $to_user = new \Longd\Model\UserAccount(); }
+
+        $to_user->updateByTwitterRes($res);
+        $to_user->saveItem();
+
         $message = new \Longd\Model\Message();
+        $message->val('to_user_account_id', $to_user->val('id'));
+        $message->val('from_user_account_id', $user['id']);
+        $message->val('message', $r->post('message'));
+        $message->saveItem();
 
-        $message->val('to_twitter_id', $r->params('tiwtter_id_str'));
-        //TODO STARTHERE
-
-
-        exit;
-        $app->redirect('message_complete');
-    }
-
-    /**
-     * @var \Slim\Slim $app
-     */
-    static function complete($app){
-        $app->render('Message/complete.html');
+        $app->redirect($app->urlFor('message_complete'));
     }
 
 }

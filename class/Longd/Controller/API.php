@@ -1,14 +1,17 @@
 <?php
 namespace Longd\Controller;
 
+use Uzulla\CFEDb2;
+use Uzulla\Util as Util;
+
 class API {
 
-    static function screen_name_exist($app){
-
-        $cb = \Codebird\Codebird::getInstance();
-        $cb->setToken($_SESSION['user']['twitter_oauth_token'], $_SESSION['user']['twitter_oauth_token_secret']);
+    static function screen_name_exist($app)
+    {
         try{
-            $reply = $cb->users_show(['screen_name'=>$app->request()->post('screen_name')]);
+            $reply = Util\Twitter::getByScreenName(
+                $app->stash['user'],
+                $app->request()->post('screen_name'));
         }catch(\Exception $e){
             $app->halt(500, 'Twitter API fail');
         }
@@ -23,13 +26,36 @@ class API {
             ]
         ];
 
-        $response = $app->response();
-        $response['Content-Type'] = 'application/json; charset=utf-8' ;
-        $response['Pragma'] = 'no-cache';
-        $response['Cache-Control'] = 'no-store';
-        $response['X-frame-options'] = 'DENY';
-        $response['X-Content-Type-Options'] = 'nosniff';
-        $response->body(json_encode($res), JSON_HEX_TAG | JSON_HEX_APOS | JSON_HEX_QUOT);
+        Util\Slim::responseJson($app, $res);
+    }
+
+    static function get_message($app)
+    {
+        if(!isset($app->stash['user'])){
+            throw new \Exception('not login');
+        }
+
+        $limit = ($app->request()->get('limit')) ? $app->request()->get('limit') : 10;
+        if($limit > 1000){ throw new \Exception('too big limit'); }
+        $offset = ($app->request()->get('offset')) ? $app->request()->get('offset') : 0;
+        $user_account_id = $app->stash['user']['id'];
+
+        $message_list = CFEDb2::simpleQuery(
+            'SELECT
+                message.*,
+                user_account.screen_name,
+                user_account.profile_image_url
+            FROM message JOIN user_account
+                ON message.from_user_account_id=user_account.id
+            WHERE  to_user_account_id=:to_user_account_id
+            LIMIT :limit OFFSET :offset',
+            [
+                'limit'=>$limit,
+                'offset'=>$offset,
+                'to_user_account_id'=>$user_account_id
+            ]);
+
+        Util\Slim::responseJson($app, $message_list);
     }
 
 }
